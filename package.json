@@ -1,0 +1,16 @@
+{
+  "author": "Charles Davison <charlie@powmedia.co.uk>",
+  "name": "pow-express-utils",
+  "description": "Express utils",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/powmedia/pow-express-utils.git"
+  },
+  "engines": {
+    "node": ">=0.6.0"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {}
+}
