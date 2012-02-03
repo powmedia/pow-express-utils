@@ -115,7 +115,9 @@ Validation.prototype.toJSON = function() {
 Validation.createFromMongoose = function(err) {
   var fields = {};
 
-  _.each(err.errors, function(item, key) {
+  Object.keys(err.errors).forEach(function(key) {
+    var item = err.errors[key];
+    
     fields[key] = item.type;
   });
 
