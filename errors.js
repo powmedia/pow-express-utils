@@ -1,5 +1,6 @@
 //Dependencies
-var inherits = require('util').inherits;
+var inherits = require('util').inherits,
+    async = require('async');
 
 // ==================================================================================
 // ERRORS
