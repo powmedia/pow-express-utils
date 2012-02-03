@@ -137,25 +137,59 @@ Validation.createFromMongoose = function(err) {
  * Options
  *     - dumpExceptions {Boolean}
  *     - showStack  {Boolean}
+ *     - sendException {Boolean}          Sends detailed error info to the API response
+ *     - handleMongooseErrors {Boolean}   Converts Mongoose ValidationErrors to custom ValidationError
+ *     - middleware {Function}            Custom middleware to run. Receives: err, req, res, next
  */
 exports.errHandler = function errHandler(options) {
   options = options || {};
 
   var dumpExceptions = options.dumpExceptions || false,
-  showStack = options.showStack || false;
+      showStack = options.showStack || false,
+      sendException = options.sendException || false,
+      handleMongooseErrors = options.handleMongooseErrors || false,
+      middleware = options.middleware || null;
+
+  if (handleMongooseErrors) {
+    var mongooseValidationError = require('mongoose').Document.ValidationError;
+  }
 
   return function(err, req, res, next) {
-    if (dumpExceptions) {
-      console.error(err);
-      if (showStack) console.log(err.stack);
-    }
+    async.series([
+      function runMiddleware(cb) {
+        if (!middleware) return cb(err, req, res);
 
-    var statusCode = err.statusCode || 500;
+        middleware(err, req, res, cb);
+      }
+    ], function runErrHandler(newErr) {
+      if (newErr) err = newErr;
 
-    var response = {
-      error: err
-    };
+      //Convert Mongoose ValidationErrors
+      if (mongooseValidationError && err instanceof mongooseValidationError) {
+        err = Validation.createFromMongoose(err);
+      }
 
-    res.send(response, statusCode);
+      if (dumpExceptions) {
+        console.error(err);
+        if (showStack) console.log(err.stack);
+      }
+
+      var statusCode = err.statusCode || 500;
+
+      var response = {
+        error: err
+      };
+
+      if (sendException) {
+        response.details = {
+          name: err.name,
+          type: err.type,
+          message: err.message,
+          stack: err.stack
+        }
+      }
+
+      res.send(response, statusCode);
+    });
   }
 };
