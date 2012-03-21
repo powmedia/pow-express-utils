@@ -15,6 +15,8 @@ exports.require = function require(type, requiredPaths) {
     var data = req[type] || {},
         paths = _.flatten(data);
 
+        console.log(data, paths)
+
     var errs = {},
         hasError = false,
         key;
@@ -23,6 +25,10 @@ exports.require = function require(type, requiredPaths) {
     for (var i = 0, len = requiredPaths.length; i < len; i++) {
       key = requiredPaths[i];
 
+      //Check if it's there as an object
+      if (typeof data[key] !== 'undefined') continue;
+
+      //Otherwise check as full path
       if (typeof paths[key] === 'undefined') {
         errs[key] = 'required';
         hasError = true;

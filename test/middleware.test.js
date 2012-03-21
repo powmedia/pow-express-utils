@@ -48,5 +48,22 @@ exports['require'] = {
 
       test.done();
     });
-  }
+  },
+  
+  'passes if the param is an object': function(test) {
+    var req = {
+      body: {
+        foo: { bar: 'baz' }
+      }
+    };
+
+    var fn = middleware.require('body', ['foo']);
+
+    fn(req, {}, function(err) {
+      console.log(err)
+      test.same(err, undefined);
+
+      test.done();
+    });
+  },
 };
