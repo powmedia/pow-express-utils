@@ -15,8 +15,6 @@ exports.require = function require(type, requiredPaths) {
     var data = req[type] || {},
         paths = _.flatten(data);
 
-        console.log(data, paths)
-
     var errs = {},
         hasError = false,
         key;
