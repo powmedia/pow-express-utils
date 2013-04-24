@@ -1,3 +1,4 @@
 module.exports = {
-  errors: require('./errors')
+  errors: require('./errors'),
+  middleware: require('./middleware')
 };
